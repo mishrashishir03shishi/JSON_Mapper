@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-8 ">
+        <select id="dropdown" class="form-select" aria-label="Default select example"
+            name="if_mapping_select">
+            <option selected>Select</option>
+            <% for (let [key, value] of  source.entries()) { %>
+                <% if(value.type != "object"){ %>
+                    <option value="<%= key %>">
+                        <%= key %>
+                    </option>
+                <% } %>
+            <% } %>
+        </select>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="wrapperifcheck"
+            name="wrapperif_mapping">
+        <label class="form-check-label" for="flexCheckDefault">
+            Add Wrapper IF Condition
+        </label>
+    </div>
+</div>
+
+<div id="tog_wrapper_if">
+    <div class="row">
+        <div class="col-5">
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-sm">IF</span>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm" name="wrapperif_mapping_text">
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-sm">ELSE</span>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-sm" name="wrapperelse_mapping_text">
+            </div>
+        </div>
+    </div>
+</div>

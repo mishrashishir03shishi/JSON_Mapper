@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foreach Mapping</title>
+    <link rel="stylesheet" href="dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="stylesheets/style.css" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+    <style>
+        .row {
+            margin: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-5">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="position: relative; left: 50%; margin-left: -50px;" href="#">JSON TOOLKIT</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-7">
+                <h5 style="font-family: monospace;">Select Array Mappings to insert Foreach Block : </h5>
+            </div>
+        </div>
+        <div style="margin: 20px;">
+            <ul>
+                <li>
+                    Select the Array mappings where you want to insert #foreach block
+                </li>
+                <li>
+                    Iterator will be used to iterate over the objects in source Array
+                </li>
+                <li>
+                    Choose unique iterator for each mapping
+                </li>            
+            </ul>
+    
+        </div>
+        <form action="/menu" method="post">
+        <div class="row">
+            <% if(t_array.length>0){ %>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Target Array</th>
+                            <th scope="col">Map To Source Array</th>
+                            <th scope="col">Iterator</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i=0; i<t_array.length; i++){ %>
+                            <tr>
+                                <th scope="row">
+                                    <%= i+1 %>
+                                </th>
+                                <td>
+                                    <%= t_array[i] %>
+                                </td>
+                                <td><select class="form-select form-select-sm" aria-label=".form-select-sm example" name="<%= t_array[i] %>">
+                                        <option selected>Select</option>
+                                        <% for(var j=0; j<s_array.length; j++) { %>
+                                            <option value="<%= s_array[j] %>">
+                                                <%= s_array[j] %>
+                                            </option>
+                                        <% } %>
+                                    </select></td>
+                                <td><input class="form-control form-control-sm" type="text" placeholder="iterator" name="iterator"></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                <% }else{ %>
+                    <h5>Click on Next to Continue</h5>
+                <% } %>
+        </div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4"><button type="submit" class="btn btn-outline-success">Next</button></div>
+            <div class="col-4"></div>
+            
+        </div>
+        </form>
+
+
+    </div>
+
+</body>
+
+</html>

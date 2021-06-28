@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu</title>
+
+  <link rel="stylesheet" href="stylesheets/style.css" />
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="javascripts/jquery-linedtextarea.js"></script>
+
+  <link href="stylesheets/jquery-linedtextarea.css" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-dark mb-1">
+    <div class="container-fluid">
+      <a class="navbar-brand" style="position: relative; left: 50%; margin-left: -50px;" href="#">JSON TOOLKIT</a>
+    </div>
+  </nav>
+
+  <div class="container-sm">
+    <div class="row">
+      <div class="d-flex p-2 bd-highlight">
+        <div class="col">
+          <p style="margin-left: 10px; margin-right: 10px;">API SERVICE:</p>
+        </div>
+        <div class="col">
+
+          <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+            <option selected>Select</option>
+            <option value="1">REST</option>
+            <option value="2">SOAP</option>
+            <option value="3">OTHER</option>
+          </select>
+        </div>
+        <div class="col">
+          <p style="margin-left: 10px; margin-right: 10px;">DATA FORMAT:</p>
+        </div>
+        <div class="col">
+          <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+            <option selected>Select</option>
+            <option value="1">JSON</option>
+            <option value="2">XML</option>
+            <option value="3">OTHER</option>
+          </select>
+        </div>
+        <div class="col">
+          <p style="margin-left: 10px; margin-right: 10px;">TEMPLATE ENGINE:</p>
+        </div>
+        <div class="col">
+          <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+            <option selected>Select</option>
+            <option value="1">VELOCITY</option>
+            <option value="2">GSON</option>
+            <option value="3">OTHER</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <br>
+  <hr>
+
+ 
+    <form method="post" name="formo" onsubmit="return check()" action="/loopselect">
+      <div class="row" style="margin: 30px;">
+    <div class="col-4">
+      <h4 style="margin-bottom:20px">Source Data : </h4>
+      <textarea class="lined" cols="60" rows="30" style="background-color:gainsboro;" name="source_file">
+
+                  </textarea>
+    </div>
+    <div class="col-1"></div>
+    <div class="col-4">
+      <h4 style="margin-bottom:20px">Target Data : </h4>
+      <textarea class="lined" cols="60" rows="30" style="background-color:gainsboro;" name = "target_file">
+
+                  </textarea>
+
+    </div>
+
+    <div class="col-1">
+
+      <button type="submit" class="btn btn-outline-primary" style="position: fixed;right: 100px; bottom: 100px;">Continue</button>
+
+    </div>
+  </div>
+    </form>
+  
+    
+    <script type="text/javascript" src="javascripts/script.js"></script>
+
+    <script>
+      function check(){
+        var area1 = document.forms["formo"]["source_file"].value;
+        var area2 = document.forms["formo"]["target_file"].value;
+        try{
+          var source = JSON.parse(area1);
+          var target = JSON.parse(area2);
+          return true;
+        }
+        catch(e){
+          alert("Please enter valid JSON data");
+          return false;
+          captureError(e); // report the error
+          throw e; // re-throw the error
+
+          
+          
+        }
+        return false;
+      }
+    </script>
+</body>
+
+</html>

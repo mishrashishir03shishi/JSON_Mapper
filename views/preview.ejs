@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Result</title>
+  <link href="/stylesheets/jquery-linedtextarea.css" rel="stylesheet">
+
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
+  <style>
+    .row {
+      margin: 10px;
+      padding: 10px;
+    }
+
+    ;
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-dark mb-1">
+    <div class="container-fluid">
+      <a class="navbar-brand" style="position: relative; left: 50%; margin-left: -50px;" href="#">JSON TOOLKIT</a>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <h5 style="font-family: monospace;">Your Template is Ready : </h5>
+    </div>
+    <div class="row">
+      <div class="col-8">
+        <div class='copied'></div>
+        <div class="copy-to-clipboard">
+        <textarea class="lined" cols="100" rows="30" style="background-color:gainsboro;" id="result"
+          style="font-family: monospace; font-size: 5px;" id="result"><%= pretty %></textarea>
+                    
+                
+              </div>
+      </div>
+      <div class="col-1"></div>
+      <div class="col-3">
+        <div class="row">
+          <button type="button" class="btn btn-success" id="copy">Copy Template</button>
+        </div>
+        <div class="row">
+
+
+        <button type="button" class="btn btn-primary">Go Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/javascripts/jquery-linedtextarea.js"></script>
+  <script>
+
+
+    $(function () {
+      $(".lined").linedtextarea();
+    });
+
+    $(function() {
+      $('#copy').click(function() {
+        $('#result').focus();
+        $('#result').select();
+        document.execCommand('copy');
+        $('#result').off( "select" );
+        $(".copied").text("Copied to clipboard").show().fadeOut(1200);
+          });
+    });
+
+
+  </script>
+</body>
+
+</html>

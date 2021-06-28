@@ -1,0 +1,22 @@
+{
+    "authRequire": "Y",
+    "data": [ {
+            "poExternalNumber": "",
+            "buyerId": "",
+            "buyerName": "",
+            "supplierId": "",
+            "supplierName": "",
+            "paymentTerms": "",
+            "commodityList": [
+                {
+                    "commodityCode": "",
+                    "commodityName": "",
+                    "unitWeight": 0
+                }
+            ],
+            "programId": "",
+            "preAccepted": "",
+            "basePoAmount": 0
+        }
+    ]
+}

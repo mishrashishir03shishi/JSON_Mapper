@@ -1,0 +1,7 @@
+
+
+$(function() {
+	$(".lined").linedtextarea();
+});
+
+ 

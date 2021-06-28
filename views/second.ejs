@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Transformation</title>
+    <!-- <link rel="stylesheet" href="dist/themes/default/style.min.css" /> -->
+    <!-- <link rel="stylesheet" href="stylesheets/style.css"/> -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+    <style>
+        .row {
+            margin: 10px;
+            padding: 10px;
+        }
+
+        ;
+    </style>
+    <link rel="stylesheet" href="/dist/themes/default/style.min.css" />
+
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-1">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="position: relative; left: 50%; margin-left: -50px;" href="#">JSON TOOLKIT</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div style="margin:20px;">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="mapping" data-bs-toggle="tab" data-bs-target="#home"
+                        type="button" role="tab" aria-controls="home" aria-selected="false">Mapping</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="custom" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+                        role="tab" aria-controls="profile" aria-selected="true">Custom Response</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
+                        type="button" role="tab" aria-controls="contact" aria-selected="false">Wrapper IF</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <form method="post" name="form1" onsubmit="return required()" action="/menu/new">
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="container">
+                    <div class="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="map_check" id="mapping_check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Add a New Mapping
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="container" id="new_mapping">
+                    <div class="row">
+                        <div class="col-7">
+                            <h5 style="font-family: monospace;">Choose Target : </h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8 ">
+                            <select id="dropdown1" class="form-select" aria-label="Default select example"
+                                name="target_mapping_select">
+                                <option selected>Select</option>
+                                <% for (let [key, value] of target.entries()) { %>
+                                    <% if(value.type !="object" ){ %>
+                                        <option value="<%= key %>">
+                                            <%= key %>
+                                        </option>
+                                        <% } %>
+                                            <% } %>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <small id="targetMapping" style="color: red;"></small>
+                    </div>
+                    <div class="row">
+                        <div class="col-7">
+                            <h5 style="font-family: monospace;">Choose Source : </h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8 ">
+                            <select id="dropdown" class="form-select" aria-label="Default select example"
+                                name="source_mapping_select">
+                                <option selected>Select</option>
+                                <% for (let [key, value] of source.entries()) { %>
+                                    <% if(value.type !="object" ){ %>
+                                        <option value="<%= key %>">
+                                            <%= key %>
+                                        </option>
+                                        <% } %>
+                                            <% } %>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <small id="iterator"></small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="if_mapping_isNull"
+                                    id="ifcheckisNull">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Add a isNotNull Validation
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-4" id="ifcheckisNullelse">
+
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">#else</span>
+                                </div>
+                                <input type="text" class="form-control" aria-label="Small"
+                                    aria-describedby="inputGroup-sizing-sm" name="if_mapping_isNull_else"
+                                    placeholder="#else" value="null">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="if_mapping_other" id="ifcheck">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Add IF Condition
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="if_mapping_toggle">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">IF</span>
+                                    <input type="text" class="form-control" aria-label="Sizing example input"
+                                        aria-describedby="inputGroup-sizing-sm" name="if_mapping_condition"
+                                        placeholder="Condition Text goes here">
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">ELSE</span>
+                                    <input type="text" class="form-control" aria-label="Sizing example input"
+                                        id="else_text" aria-describedby="inputGroup-sizing-sm" name="else_mapping_text"
+                                        placeholder="Value goes here">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="container">
+                    <div class="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="cust_check" id="custom_check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Custom Mapping
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="container" id="custom_mapping">
+                    <div class="row" style="margin: 20px;">
+                        <div class="col-7">
+                            <h5 style="font-family: monospace;">Choose Field : </h5>
+                        </div>
+                    </div>
+                    <div class="row" style="margin: 20px;">
+                        <div class="col-7 ">
+                            <select id="dropdown3" class="form-select" aria-label="Default select example"
+                                name="target_custom_select">
+                                <option selected>Select</option>
+                                <% for (let [key, value] of target.entries()) { %>
+                                    <% if(value.type !="object" ){ %>
+                                        <option value="<%= key %>">
+                                            <%= key %>
+                                        </option>
+                                        <% } %>
+                                            <% } %>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <small id="targetCustom" style="color: red;"></small>
+                    </div>
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Enter Your response </span>
+                                <input type="text" class="form-control" placeholder="Value" aria-label="Username"
+                                    aria-describedby="basic-addon1" name="custom_response" id="custom_response">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="ifcheck_custom"
+                                name="ifcheck_custom_other">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Add IF Condition
+                            </label>
+                        </div>
+                    </div>
+                    <div id="tog_if_custom">
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">IF</span>
+                                    <input type="text" class="form-control" aria-label="Sizing example input"
+                                        aria-describedby="inputGroup-sizing-sm" name="if_custom_condition"
+                                        placeholder="Condition">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">ELSE</span>
+                                    <input type="text" class="form-control" aria-label="Sizing example input"
+                                        aria-describedby="inputGroup-sizing-sm" name="else_custom_text"
+                                        placeholder="Else Response">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="container">
+                    <div class="row">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="wrapper_check" id="wrapper_check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Add a Wrapper IF Statement
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row" id="wrapper_tog">
+                        <div class="col-7">
+                            <ul>
+                                <li>
+                                    Select the Starting and Ending fields around which you want to wrap the Statement
+                                </li>
+                                <li>
+                                    If only one field is to be wrapped, Select the same field in both Starting and
+                                    Ending Fields.
+                                </li>
+                            </ul>
+                            <div class="row">
+                                <h5 style="font-family: monospace;">Choose Starting Field : </h5>
+                            </div>
+                            <div class="row" style="margin: 20px;">
+
+                                <select id="dropdown4" class="form-select" aria-label="Default select example"
+                                    name="wrapper_start">
+                                    <option selected>Select</option>
+                                    <% for (let [key, value] of target.entries()) { %>
+
+                                        <option value="<%= key %>">
+                                            <%= key %>
+                                        </option>
+
+                                        <% } %>
+                                </select>
+
+                            </div>
+                            <div class="row">
+                                <h5 style="font-family: monospace;">Choose Ending Field : </h5>
+                            </div>
+                            <div class="row" style="margin: 20px;">
+
+                                <select id="dropdown5" class="form-select" aria-label="Default select example"
+                                    name="wrapper_end">
+                                    <option selected>Select</option>
+                                    <% for (let [key, value] of target.entries()) { %>
+
+                                        <option value="<%= key %>">
+                                            <%= key %>
+                                        </option>
+
+                                        <% } %>
+                                </select>
+
+                            </div>
+                            <div class="row">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">IF</span>
+                                    <input type="text" class="form-control" aria-label="Sizing example input"
+                                        aria-describedby="inputGroup-sizing-sm" name="wrapper_condition"
+                                        placeholder="condition">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-1" style="border-left:1px solid #000;height:600px"></div>
+                        <div class="col-4">
+                            <div class="row">
+                                <h5 style="font-family: monospace;">Target View : </h5>
+                            </div>
+                            <div class="row">
+                                <div id="tree">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row" style="margin: 50px;">
+                    <div class="col-2"></div>
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-outline-success">Add Transformation</button>
+                    </div>
+    </form>
+    <div class="col-2"></div>
+    <div class="col-3">
+        <form action="/menu">
+            <button type="submit" class="btn btn-outline-danger">Discard</button>
+        </form>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+
+
+    </div>
+    <script src="/javascripts/jstree.min.js"></script>
+
+    <script>
+
+        var jsondata_target = JSON.parse('<%- arr_target %>');
+        // console.log(jsondata[0].text);
+        $.jstree.defaults.core.themes.variant = "large";
+
+
+
+        $(function () {
+
+            // var jsondata_source = jsondata;
+            var identifier_target = $('#tree');
+
+            createJSTree(jsondata_target, identifier_target);
+
+
+        });
+
+        function createJSTree(jsondata, identifier) {
+            identifier
+                .jstree({
+                    'core': {
+                        'data': jsondata
+                    },
+
+
+                })
+                .bind("loaded.jstree", function (event, data) {
+                    $(this).jstree("open_all");
+                });
+
+        }
+
+        $('#dropdown1').on('change', function () {
+            var tgt = $(this).val();
+            if (tgt != "Select") {
+                $.ajax({
+                    type: "POST",
+                    url: "/targetsearch",
+                    data: { target: tgt },
+                    success: function (result) {
+                        if (result.msg == true) {
+                            $('#targetMapping').text("This field has already been Mapped");
+                        }
+                        else {
+                            $('#targetMapping').text("");
+                        }
+                    },
+                    error: function (err) { console.log("bey yaar"); console.log(err); }
+                });
+            }
+            else {
+                $('#targetMapping').text("");
+            }
+        });
+
+        $('#dropdown3').on('change', function () {
+            var tgt = $(this).val();
+            if (tgt != "Select") {
+                $.ajax({
+                    type: "POST",
+                    url: "/targetsearch",
+                    data: { target: tgt },
+                    success: function (result) {
+                        if (result.msg == true) {
+                            $('#targetCustom').text("This field has already been Mapped");
+                        }
+                        else {
+                            $('#targetCustom').text("");
+                        }
+                    },
+                    error: function (err) { console.log("bey yaar"); console.log(err); }
+                });
+            }
+            else {
+                $('#targetCustom').text("");
+            }
+        });
+
+        $('#dropdown').on('change', function () {
+            ajax_value($('#dropdown'), $('#else_text'), 1);
+        });
+
+        $('#dropdown3').on('change', function () {
+            ajax_value($('#dropdown3'), $("#custom_response"), 2);
+        });
+
+        function ajax_value(selector, setter, indicator) {
+            var iter = selector.val();
+            var datum;
+            if (iter != "Select") {
+                datum = iter;
+                $.ajax({
+                    type: "POST",
+                    url: "/typeDisplay",
+                    data: { datum, flag: indicator },
+                    success: function (result) {
+                        setter.attr('placeholder', "Value of type " + result.type);
+                        if (indicator == 2) {
+                            setter.attr('value', result.value);
+                        }
+                        if (indicator == 1) {
+                            $('#iterator').text("Mapping text : " + result.iterator);
+                        }
+
+                    },
+                    error: function (err) { console.log("bey yaar"); console.log(err); }
+                });
+            }
+            else {
+                setter.attr('placeholder', "Enter a Value ");
+                if (indicator == 1) {
+                    $('#iterator').text("Mapping text : Please Select a value");
+                }
+
+            }
+        }
+
+
+
+        var new_mapping, custom_mapping, wrapper;
+        $('#if_mapping_toggle').hide();
+        $('#tog_if_custom').hide();
+        $('#tog_else_custom').hide();
+
+        $('#custom_mapping').hide();
+        $('#new_mapping').hide();
+
+        $('#wrapper_tog').hide();
+        $('#ifcheckisNullelse').hide();
+
+
+
+        $('#ifcheck').on('change',
+            function () {
+                if ($(this).is(':checked')) {
+                    $('#if_mapping_toggle').show();
+                }
+                else {
+                    $('#if_mapping_toggle').hide();
+
+                }
+            });
+
+        $('#ifcheckisNull').on('change',
+            function () {
+                if ($(this).is(':checked')) {
+                    $('#ifcheckisNullelse').show();
+                }
+                else {
+                    $('#ifcheckisNullelse').hide();
+
+                }
+            });
+
+        $('#ifcheck_custom').on('change',
+            function () {
+                if ($(this).is(':checked')) {
+                    $('#tog_if_custom').show();
+                    $('#tog_else_custom').show();
+                }
+                else {
+                    $('#tog_if_custom').hide();
+                    $('#tog_else_custom').hide();
+                }
+            });
+
+        // $('#wrapperifcheck').on('change',
+        //     function () {
+        //         if ($(this).is(':checked')) {
+        //             $('#tog_wrapper_if').show();
+        //         }
+        //         else {
+        //             $('#tog_wrapper_if').hide();
+        //         }
+        //     });
+
+        $('#custom_check').on('change',
+            function () {
+                if ($(this).is(':checked')) {
+                    $('#custom_mapping').show();
+                    custom_mapping = true;
+                }
+                else {
+                    $('#custom_mapping').hide();
+                    custom_mapping = false;
+                }
+            });
+        $('#mapping_check').on('change',
+            function () {
+                if ($(this).is(':checked')) {
+                    $('#new_mapping').show();
+                    new_mapping = true;
+                }
+                else {
+                    $('#new_mapping').hide();
+                    new_mapping = false;
+                }
+            });
+
+        $('#wrapper_check').on('change',
+            function () {
+                if ($(this).is(':checked')) {
+                    $('#wrapper_tog').show();
+                    wrapper = true;
+                }
+                else {
+                    $('#wrapper_tog').hide();
+                    wrapper = false;
+
+                }
+            });
+
+
+
+        function required() {
+            // var target_check = document.forms["form1"]["foreach_check"].value;
+            // var source_check = document.forms["form1"]["custom_check"].value;
+            if (new_mapping) {
+                if (custom_mapping || wrapper) {
+                    alert("Choose any one Service!");
+                    return false;
+                }
+                else {
+                    return true;
+                }
+
+            }
+            else if (custom_mapping) {
+                if (new_mapping || wrapper) {
+                    alert("Choose any one Service!");
+                    return false;
+                }
+                else {
+                    return true;
+                }
+
+            }
+            else if (wrapper) {
+                if (new_mapping || custom_mapping) {
+                    alert("Choose any one Service!");
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                alert("Choose any Service!");
+                return false;
+            }
+
+        }
+
+    </script>
+</body>
+
+</html>

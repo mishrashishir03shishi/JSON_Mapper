@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Transformations</title>
+
+    <!-- <link rel="stylesheet" href="stylesheets/style.css"/> -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    
+    <style>
+        .table_row{
+            font-size: 15px;
+        }
+        .bttn {
+             /* Blue background */
+            border: none; /* Remove borders */
+            color:grey; /* White text */
+            
+            font-size: 15px; /* Set a font size */
+            cursor: pointer; /* Mouse pointer on hover */
+        }
+
+        /* Darker background on mouse-over */
+        .bttn:hover {
+            color:black;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-1">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="position: relative; left: 50%; margin-left: -50px;" href="#">JSON TOOLKIT</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row" style="margin: 10px;">
+           
+            <div class="col-4">
+                <form action="/menu">
+                    <button type="submit" class="btn btn-secondary"><- Add New Transformation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div style="margin: 30px; padding: 20px;">
+        <h5 style="font-family:monospace ;">Saved Mappings</h5>
+        <% if(mappings.length != 0){ %>
+        <table class="table">
+           
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Target</th>
+                <th scope="col">Mapped to</th>
+                <th scope="col">notNull Check</th>
+                <th scope="col">If check</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            
+            <tbody>    
+                <% mappings.forEach((mapping, index) => { %>                              
+                              
+                    <tr class="table_row" id="<%= mapping._id %>">                        
+                        <th scope="row"><%= index+1 %></th>
+                        <td><%= mapping.target_mapping_select_ %></td>
+                        <td><%= mapping.source_mapping_select_ %></td>
+                        <td><% if(mapping.if_mapping_isNull_){ %><span>&#10004;</span><% }else{  %><span>&#10006;</span><% } %></td>
+                        <td><% if(mapping.if_mapping_other_){ %><span>&#10004;</span><% }else{  %><span>&#10006;</span><% } %></td>
+                        <td><button class="bttn" data-mapping-id="<%= mapping._id %>"><i class='fas fa-trash-alt'></i></button></td>
+                    </tr>  
+                                 
+                <% }) %>                            
+            </tbody>
+            
+        </table>
+        <%} else { %>
+            <p>No Mappings added till now!</p>
+        <% } %>
+              
+    </div>
+    <hr>
+    <div style="margin: 30px; padding: 20px;">
+        <h5 style="font-family:monospace ;">Custom Response</h5>
+        <% if(customs.length != 0){ %>
+        <table class="table">
+           
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Target</th>
+                <th scope="col">Response</th>
+                <th scope="col">If check</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% customs.forEach((mapping, index) => { %>      
+                             
+                    
+                        <tr class="table_row" id="<%= mapping._id %>">                        
+                            <th scope="row"><%= index+1 %></th>
+                            <td><%= mapping.target_custom_select_ %></td>
+                            <td><%= mapping.custom_response_ %></td>                             
+                            <td><% if(mapping.ifcheck_custom_other_){ %><span>&#10004;</span><% }else{  %><span>&#10006;</span><% } %></td>                           
+                            <td><button class="bttn" data-mapping-id="<%= mapping._id %>"><i class='fas fa-trash-alt'></i></button></td>
+                        </tr>  
+                                         
+                    <% }) %>       
+            </tbody>
+        </table>
+        <%} else { %>
+            <p>No Custom Responses added till now!</p>
+        <% } %>
+    </div>
+    <hr>
+    <div style="margin: 30px; padding: 20px;">
+        <h5 style="font-family:monospace ;">Wrapper If</h5>
+        <% if(wrappers.length != 0){ %>
+        <table class="table">
+           
+            <thead>
+              <tr>
+                <th scope="col-1">#</th>
+                <th scope="col-4">Starting Field</th>
+                <th scope="col-4">Ending Field</th>
+                
+                <th scope="col-1">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% wrappers.forEach((mapping, index) => { %>      
+                             
+                    
+                        <tr class="table_row" id="<%= mapping._id %>">                        
+                            <th scope="row"><%= index+1 %></th>
+                            <td><%= mapping.wrapper_start_ %></td>
+                            <td><%= mapping.wrapper_end_ %></td>                            
+                            <td><button class="bttn" data-mapping-id="<%= mapping._id %>"><i class='fas fa-trash-alt'></i></button></td>
+                        </tr>  
+                                         
+                    <% }) %>       
+            </tbody>
+        </table>
+        <%} else { %>
+            <p>No Wrapper Conditions added till now!</p>
+        <% } %>
+    </div>
+    <hr>
+    <div style="margin: 30px; padding: 20px;">
+        <h5 style="font-family:monospace ;">ForEach Block</h5>
+        <% if(foreachs.length != 0){ %>
+        <table class="table">
+           
+            <thead>
+              <tr>
+                <th scope="col-1">#</th>
+                <th scope="col-5">Target Array</th>                
+                <th scope="col-2">Mapped to Source Array</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+                <% foreachs.forEach((foreach, index) => { %>      
+                             
+                     
+                        <tr class="table_row">                        
+                            <th scope="row"><%= index+1 %></th>
+                            <td><%= foreach.target_for_each_select_ %></td>
+                            <td><%= foreach.source_for_each_select_ %></td>                            
+                            
+                        </tr>  
+                                         
+                    <% }) %>       
+            </tbody>
+        </table>
+        <%} else { %>
+            <p>No For Each Block added till now!</p>
+        <% } %>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script>
+        $('.bttn').on('click', function(){            
+            var _id = $(this).attr('data-mapping-id');
+            // console.log(_id);
+            $.ajax({
+                    type: "POST",
+                    url: "/deleteMapping",
+                    data: { id : _id},
+                    success: function (result) {               
+                        $('#' + _id).remove();
+                        // console.log("Deleted Successfully")
+                    },
+                    error: function (err) {console.log(err); }
+                });
+        });
+    </script>
+
+</body>
+</html>
