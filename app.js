@@ -1,26 +1,51 @@
 const express = require('express');
-
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+var MongoDBStore = require('connect-mongodb-session')(session);
 const builder = require('./builder');
 const processor = require('./processor');
 const pluralize = require('pluralize')
 const mongoose = require('mongoose');
 const Jsonfile = require('./models/jsoninput');
 const Mapping = require('./models/mapping');
+const prettyPrint = require('./prettyPrint');
+const fileExporter = require('./fileExporter');
 const bodyParser = require('body-parser');
-// const { result } = require('lodash');
+const _ = require('lodash'); 
+const { result } = require('lodash');
 
 const app = express();
 app.set('port', process.env.PORT || 3000);
 const dbURI = "mongodb://iamshishir:shishir2000@cluster0-shard-00-00.nhzzd.mongodb.net:27017,cluster0-shard-00-01.nhzzd.mongodb.net:27017,cluster0-shard-00-02.nhzzd.mongodb.net:27017/jsontoolkit?ssl=true&replicaSet=atlas-nzsotq-shard-0&authSource=admin&retryWrites=true&w=majority";
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then((result) => {
         console.log('connected to db');
-        app.listen(app.get('port'));
+        // app.listen(app.get('port'));
         //console.log("Hello");
     })
     .catch((err) => {
         console.log(err);
     });
+
+var store = new MongoDBStore({
+    uri: dbURI,
+    collection: 'mySessions'
+});
+
+store.on('error', function(error) {
+    console.log(error);
+  });
+
+
+app.use(require('express-session')({
+    secret: 'This is a secret',
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 // 1 week
+    },
+    store: store,    
+    resave: true,
+    saveUninitialized: true
+}));
 
 
 app.set('view engine', 'ejs');
@@ -30,14 +55,25 @@ app.use(express.static(__dirname + "/public"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.listen(app.get('port'));
+console.log("Listening on port " + app.get('port'));
+
+app.get('/', (req, res) => {    
+    console.log(req.sessionID);
+    res.render('home');
+});
 
 
-app.get('/', (req, res) => {
+app.post('/input', (req, res) => {
+    console.log(req.sessionID);
     res.render('index');
 });
 
+
 app.post('/loopselect', (req, res)=>{
+    console.log(req.sessionID);
     const jsonfile = new Jsonfile({
+        session_id : req.sessionID,
         source_body : req.body.source_file,
         target_body : req.body.target_file,
     });
@@ -61,11 +97,12 @@ app.post('/loopselect', (req, res)=>{
 
 
 app.post('/menu', (req, res) => {
-    console.log(req);
+    // console.log(req.sessionID);
+    // console.log(req);
     var src= [];
     var trgt = [];
     var iter = [];
-    var src_map = new Map();    
+    var src_map = new Map();       
     for (const [key, value] of Object.entries(req.body)) {
         if(key!="iterator"){
             trgt.push(key);
@@ -84,16 +121,22 @@ app.post('/menu', (req, res) => {
     }
     else{
         src_map.set(src[0], iter);
+        var iterArray = [];
+        iterArray.push(iter);
+        iter = iterArray;
     }
+     
     
     trgt.forEach(function(item, i){
         const mapping = new Mapping({
+            session_id : req.sessionID,
             mapping_check_ : false,
             custom_check_ : false,
             wrapper_check_ : false,
             foreach_check_ : true,
             target_for_each_select_ : item,
-            source_for_each_select_ : src[i],            
+            source_for_each_select_ : src[i], 
+            foreach_iterator_ : iter[i]           
         });
         mapping.save()
             .then((result)=>{
@@ -105,11 +148,11 @@ app.post('/menu', (req, res) => {
             
     });
     
-    Jsonfile.find({})
+    Jsonfile.find({session_id : req.sessionID})
         .then((result)=>{
             // var data = result;
             var items = builder(result[0].source_body, result[0].target_body, src_map);
-            Jsonfile.findOneAndUpdate({source_body:result[0].source_body, target_body:result[0].target_body}, 
+            Jsonfile.findOneAndUpdate({session_id : req.sessionID, source_body:result[0].source_body, target_body:result[0].target_body}, 
                 {source_paths : items.source_paths, target_paths: items.target_paths, source_result : items.source_result, target_result : items.target_result},
                 {new : true},
                 function(err, doc){
@@ -139,13 +182,14 @@ app.post('/menu', (req, res) => {
 
 
 app.get('/menu', (req, res) => {
-    Jsonfile.find({})
+    // console.log(req.sessionID);
+    Jsonfile.find({session_id : req.sessionID})
         .then((result) => {     
             var data = result;
             var map = result[0].target_paths;
             var mapped_targets = new Set();
             var unmapped_targets = [];
-            Mapping.find({})
+            Mapping.find({session_id : req.sessionID})
                 .then((result)=>{
                     // console.log(result);
                     for(var i=0; i<result.length; i++){
@@ -166,7 +210,7 @@ app.get('/menu', (req, res) => {
                 })  
                 .then((err)=>{
                     console.log(err);
-                })       
+                });     
             
         })
         .catch((err) => {
@@ -175,7 +219,8 @@ app.get('/menu', (req, res) => {
 });
 
 app.get('/menu/new/', (req, res) => {
-    Jsonfile.find({})
+    // console.log(req.sessionID);
+    Jsonfile.find({session_id : req.sessionID})
         .then((result) => {                 
             res.render('second', { source: result[0].source_paths, target: result[0].target_paths, arr_target: JSON.stringify(result[0].target_result)});
         })
@@ -185,7 +230,8 @@ app.get('/menu/new/', (req, res) => {
 });
 
 app.post('/menu/new/', (req, res) => {
-    console.log(req.body);
+    // console.log(req.sessionID);
+    // console.log(req.body);
     var mapping_check = false; var custom_check = false; var wrapper_check = false; 
 
 
@@ -246,6 +292,7 @@ app.post('/menu/new/', (req, res) => {
     
 
     const mapping = new Mapping({
+        session_id : req.sessionID,
 
         mapping_check_ : mapping_check,        
         target_mapping_select_: target_mapping_select,
@@ -288,7 +335,7 @@ app.post('/menu/new/', (req, res) => {
 
 app.post('/typeDisplay', (req, res)=>{
     // console.log(Object.keys(req.body)[0]);   
-    Jsonfile.find({})   
+    Jsonfile.find({session_id : req.sessionID})   
         .then((result)=>{
             var value;
             if(req.body.flag==1){
@@ -306,12 +353,13 @@ app.post('/typeDisplay', (req, res)=>{
         })
         .catch((err)=>{
             console.log(err);
-        })
+        });
 });
+
 
 app.post('/foreach', (req, res)=>{
     console.log(req.body);
-    Jsonfile.find({})
+    Jsonfile.find({session_id : req.sessionID})
         .then((result)=>{
             var text = result[0].source_paths.get(req.body.foreach_source).text;
             var iterator = result[0].source_paths.get(req.body.foreach_source).iterator;
@@ -324,7 +372,7 @@ app.post('/foreach', (req, res)=>{
 
 app.post('/targetsearch', (req, res)=>{
     var target = req.body.target;
-    Mapping.count({$or : [{target_mapping_select_ : target},{target_custom_select_ : req.body.target}]}, function(err, count){
+    Mapping.count({session_id : req.sessionID, $or : [{target_mapping_select_ : target},{target_custom_select_ : req.body.target}]}, function(err, count){
         if(err){
             console.log(err);
         }
@@ -338,7 +386,7 @@ app.post('/targetsearch', (req, res)=>{
 });
 
 app.post('/deleteMapping', (req, res)=>{
-    Mapping.findOneAndDelete({_id : req.body.id}, function(err, doc){
+    Mapping.findOneAndDelete({session_id : req.sessionID, _id : req.body.id}, function(err, doc){
         if(err){
             console.log(err);
         }
@@ -349,7 +397,7 @@ app.post('/deleteMapping', (req, res)=>{
 });
 
 app.post('/deleteAll', (req, res)=>{
-    Mapping.deleteMany({})
+    Mapping.deleteMany({session_id : req.sessionID})
         .then(()=>{
             console.log('All Mappings Deleted!');
             res.redirect('/menu');
@@ -360,7 +408,8 @@ app.post('/deleteAll', (req, res)=>{
 });
 
 app.get('/menu/mappings/', (req, res) => {
-    Mapping.find({})
+    // console.log(req.sessionID);
+    Mapping.find({session_id : req.sessionID})
         .then((result) => {
             //console.log(result);
             var mappings = []; var customs = []; var foreachs = []; var wrappers = [];
@@ -387,21 +436,21 @@ app.get('/menu/mappings/', (req, res) => {
 
 
 //To be edited
-app.get('/menu/preview/', (req, res) => {
-    var jsonfiles; var mappings;
-    Jsonfile.find({})
+app.get('/menu/preview', (req, res) => {
+    // console.log(req.sessionID);
+   
+    Jsonfile.find({session_id : req.sessionID})
         .then((result) => {                
             jsonfiles = result;
-             Mapping.find({})
+             Mapping.find({session_id : req.sessionID})
             .then((result) => {
                 mappings = result;
                 var obj = processor(jsonfiles, mappings);
                 var pretty = JSON.stringify(obj, undefined, 4);
                 
-                pretty = resultGenerator(pretty);
-                
-             
-                res.render('preview', {pretty});
+                pretty = prettyPrint(pretty);                
+                fileExporter(jsonfiles, mappings, req.sessionID);
+                res.render('preview', {pretty,session_id : req.sessionID });
             })
             .catch((err)=>{
                 console.log(err);
@@ -409,27 +458,75 @@ app.get('/menu/preview/', (req, res) => {
         })
         .catch((err) => {
             console.log(err);
-        });    
+        });  
     
 });
 
-app.use((req, res) => {
-    Mapping.deleteMany({})
-        .then((result) => {
-            // res.redirect('/');
-            console.log("Deleted mappings");
+app.post('/goHome', (req, res) => {
+    Mapping.deleteMany({session_id : req.sessionID})
+        .then((result) => {            
+            Jsonfile.deleteMany({session_id : req.sessionID})
+            .then((result) => {
+                console.log("Deleted jsonfiles");
+                mongoose.connection.db.collection('mySessions', function (error, collection) {
+                    if (error) {
+                      console.error('Problem retrieving sessions collection:', error);
+                    } else {
+                      collection.remove({_id : req.sessionID}, function (error) {
+                        if (error) {
+                          console.error('Problem emptying sessions collection:', error);
+                        } else {
+                          console.log('Emptied sessions collection');
+                          req.session.destroy(function(err) {
+                            if(err){
+                                console.log(err);
+                            }
+                            else{
+                                var fs = require('fs');
+                                const file = `${__dirname}/export_files/${req.sessionID}.json`;
+                                fs.unlink(file, (err) => {
+                                if (err) {
+                                    console.log("failed to delete local file:"+err);
+                                } else {
+                                    console.log('successfully deleted local file'); 
+                                    res.redirect('/');                               
+                                }
+                                }); 
+                                
+                            }
+                         });
+                        }
+                      });
+                    }
+                  });
+                
+            })
+            .catch((err) => {
+                console.log(err);
+            });
         })
         .catch((err) => {
             console.log(err);
-        });
+        });   
+    
+});
 
-    Jsonfile.deleteMany({})
-        .then((result) => {
-            console.log("Deleted jsonfiles");
-        })
-        .catch((err) => {
+app.get('/download', (req, res) =>{
+    const file = `${__dirname}/export_files/${req.sessionID}.json`;
+    var fs = require('fs');
+    res.download(file, `${req.sessionID}.json`, (err) =>{
+        if(err){
             console.log(err);
-        });
+        }        
+    }); 
+    
+       
+});
+
+
+
+app.use((req, res) => {   
+       
     res.status(404).render('404');
 });
 
@@ -448,31 +545,6 @@ function walk(obj, root,  get){
     }   
 }
 
-function resultGenerator(pretty) {
-    pretty = pretty.replace(/"@/g, "");
-    pretty = pretty.replace(/@",/g, "");         
-    pretty = pretty.replace(/@"/g, "");            
-    pretty = pretty.replace(/\\/g, "");
-    pretty = pretty.replace(/-"/g, "");
-    pretty = pretty.replace(/"if_[0-9]+": /g, "");
-    pretty = pretty.replace(/"end_[0-9]+": /g, "");
-    var regex = /foreach.last/g, result, indices = [];
-    while ( (result = regex.exec(pretty)) ) {
-        indices.push(result.index);
-    }
-    for(var i=0; i<indices.length; i++){
-        var index = indices[i];
-        while(true){
-            if(pretty.charAt(index) == ','){
-                pretty = pretty.substring(0, index) + pretty.substring(index+1);
-                // console.log(index);
-                break;
-            }
-            else{
-                index--;
-            }
-        }
-    }
-    return pretty; 
-}
+
+
 

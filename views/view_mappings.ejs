@@ -160,9 +160,10 @@
            
             <thead>
               <tr>
-                <th scope="col-1">#</th>
-                <th scope="col-5">Target Array</th>                
-                <th scope="col-2">Mapped to Source Array</th>
+                <th scope="col">#</th>
+                <th scope="col">Target Array</th>                
+                <th scope="col">Mapped to Source Array</th>
+                <th scope="col">Iterator Name</th>
                 
               </tr>
             </thead>
@@ -173,7 +174,8 @@
                         <tr class="table_row">                        
                             <th scope="row"><%= index+1 %></th>
                             <td><%= foreach.target_for_each_select_ %></td>
-                            <td><%= foreach.source_for_each_select_ %></td>                            
+                            <td><%= foreach.source_for_each_select_ %></td>    
+                            <td><%= foreach.foreach_iterator_ %></td>                        
                             
                         </tr>  
                                          

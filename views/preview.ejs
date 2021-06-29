@@ -44,26 +44,61 @@
       <div class="col-8">
         <div class='copied'></div>
         <div class="copy-to-clipboard">
-        <textarea class="lined" cols="100" rows="30" style="background-color:gainsboro;" id="result"
-          style="font-family: monospace; font-size: 5px;" id="result"><%= pretty %></textarea>
-                    
-                
-              </div>
+          <textarea class="lined" cols="100" rows="30" style="background-color:gainsboro;" id="result"
+            style="font-family: monospace; font-size: 5px;" id="result"><%= pretty %></textarea>
+
+
+        </div>
       </div>
       <div class="col-1"></div>
       <div class="col-3">
         <div class="row">
-          <button type="button" class="btn btn-success" id="copy">Copy Template</button>
+          <button type="button" class="btn btn-success" id="copy" style="width:80%;">Copy Template</button>
         </div>
         <div class="row">
 
+          <form action="/menu">
+            <button type="submit" class="btn btn-primary" style="width:80%;">Go Back</button>
+          </form>
 
-        <button type="button" class="btn btn-primary">Go Home</button>
+        </div>
+        <div class="row">
+
+          <form action="/download">
+            <button type="submit" class="btn btn-primary" style="width:80%;">Export Data</button>
+          </form>
+
+        </div>
+        <div class="row">
+
+          
+            <button type="submit" id="modalButton" class="btn btn-danger" style="width:80%;">Go Home</button>
+          
+
         </div>
       </div>
     </div>
   </div>
-  
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Are You Sure ?</h5>
+          
+        </div>
+        <div class="modal-body">
+         Going Back Home will Delete all your data. Do you want to continue?
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <form action="/goHome" method="POST">
+            <button type="submit" id="confirm" class="btn btn-primary">Confirm</button>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
   <script src="/javascripts/jquery-linedtextarea.js"></script>
   <script>
 
@@ -72,16 +107,23 @@
       $(".lined").linedtextarea();
     });
 
-    $(function() {
-      $('#copy').click(function() {
+    $(function () {
+      $('#copy').click(function () {
         $('#result').focus();
         $('#result').select();
         document.execCommand('copy');
-        $('#result').off( "select" );
+        $('#result').off("select");
         $(".copied").text("Copied to clipboard").show().fadeOut(1200);
-          });
+      });
     });
+    
+    $('#modalButton').on('click', function(){
+            $('#myModal').modal('show');
+        });
 
+        $('#close').on('click', function(){
+            $('#myModal').modal('hide');
+        });
 
   </script>
 </body>

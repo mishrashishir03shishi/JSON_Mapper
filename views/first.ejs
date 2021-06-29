@@ -69,11 +69,17 @@
                                           <span aria-hidden="true">&times;</span>
                                         </button>
                                       </div>
+                                      <% if(unmapped_targets.length>0){ %>
                                     <ul class="list-group">
                                         <% for(var i=0; i<unmapped_targets.length; i++){ %>
                                             <li class="list-group-item"><%= unmapped_targets[i] %></li>
                                         <% } %>                                        
                                       </ul>
+                                      <% }else{ %>
+                                        <div class="row">
+                                            <p>All Target Fields have been mapped!</p>
+                                        </div>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -99,30 +105,11 @@
                               </div>
                             </div>
                         </div>
-                        
-                            <button type="button" id="generate" class="btn btn-success" style="width: 75%;">Generate
+                        <form action="/menu/preview/">
+                            <button type="submit" id="generate" class="btn btn-success" style="width: 75%;">Generate
                             Template</button>
-
-                            <div class="modal fade" id="generateTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalLabel">Are You Sure ?</h5>
-                                      
-                                    </div>
-                                    <div class="modal-body">
-                                     You won't be able to add any new transformations or go back.
-                                     Make sure all transformation operations are complete before proceeding.
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" id="close_generate" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                      <form action="/menu/preview/">
-                                        <button type="submit" id="confirm_generate" class="btn btn-primary">Confirm</button>
-                                      </form>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                        </form>
+                            
                         
                     </div>
                 </div>
@@ -186,13 +173,6 @@
             $('#myModal').modal('hide');
         });
 
-        $('#generate').on('click', function(){
-            $('#generateTemplate').modal('show');
-        });
-
-        $('#close_generate').on('click', function(){
-            $('#generateTemplate').modal('hide');
-        });
 
 
 

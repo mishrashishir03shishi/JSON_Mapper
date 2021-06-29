@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const mappingSchema = new Schema({
+    session_id : {
+        type : String,
+        required : true
+    },
+
+    
     mapping_check_ : {
         type : Boolean,
         required : true
@@ -73,6 +79,10 @@ const mappingSchema = new Schema({
     },
     source_for_each_select_ : {
         type:String,
+        required : forEachCheckHandler
+    },
+    foreach_iterator_ : {
+        type :String,
         required : forEachCheckHandler
     },
     

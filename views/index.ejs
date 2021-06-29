@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu</title>
+  <title>Json Input</title>
 
   <link rel="stylesheet" href="stylesheets/style.css" />
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -70,7 +70,19 @@
   </div>
   <br>
   <hr>
-
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-default">Project Title</span>
+          </div>
+          <input type="text" required=true class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        </div>
+      </div>
+      
+    </div>
+  </div>
  
     <form method="post" name="formo" onsubmit="return check()" action="/loopselect">
       <div class="row" style="margin: 30px;">
