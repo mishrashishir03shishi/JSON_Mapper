@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu</title>
-    <link rel="stylesheet" href="dist/themes/default/style.min.css" />
-    <link rel="stylesheet" href="stylesheets/style.css" />
+    <link rel="stylesheet" href="/dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="javascripts/jstree.min.js"></script>
+    <script src="/javascripts/jstree.min.js"></script>
     <!-- <script type="text/javascript" src="javascripts/script_first.js"></script> -->
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
@@ -49,68 +49,86 @@
             </div>
 
             <div class="col">
-                
+
                 <div class="row mb-4">
                     <div class="d-grid gap-5">
-                        <form action="/menu/new/">
-                            <button type="submit" class="btn btn-info" style="width: 75%;">Add New Transformation</button>
+                        <form action="/menu/<%= id %>/new/">
+                            <button type="submit" class="btn btn-info" style="width: 75%;">Add New
+                                Transformation</button>
                         </form>
-                        <form action="/menu/mappings/">
-                            <button type="submit" class="btn btn-info" style="width: 75%;">View Saved Transformations</button>
-                        </form>                        
-                        <button id="unmapped" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" style="width: 75%;">Unmapped Target Fields</button>
+                        <form action="/menu/<%= id %>/mappings/">
+                            <button type="submit" class="btn btn-info" style="width: 75%;">View Saved
+                                Transformations</button>
+                        </form>
+                        <button id="unmapped" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target=".bd-example-modal-lg" style="width: 75%;">Unmapped Target Fields</button>
 
-                        <div id="unmappedModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div id="unmappedModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+                            aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">UnMapped target Fields</h5>
-                                        <button id="closeunmapped" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                          <span aria-hidden="true">&times;</span>
+                                        <button id="closeunmapped" type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
                                         </button>
-                                      </div>
-                                      <% if(unmapped_targets.length>0){ %>
-                                    <ul class="list-group">
-                                        <% for(var i=0; i<unmapped_targets.length; i++){ %>
-                                            <li class="list-group-item"><%= unmapped_targets[i] %></li>
-                                        <% } %>                                        
-                                      </ul>
-                                      <% }else{ %>
-                                        <div class="row">
-                                            <p>All Target Fields have been mapped!</p>
-                                        </div>
-                                    <% } %>
+                                    </div>
+                                    <% if(unmapped_targets.length>0){ %>
+                                        <ul class="list-group">
+                                            <% for(var i=0; i<unmapped_targets.length; i++){ %>
+                                                <li class="list-group-item">
+                                                    <%= unmapped_targets[i] %>
+                                                </li>
+                                                <% } %>
+                                        </ul>
+                                        <% }else{ %>
+                                            <div class="row">
+                                                <p>All Target Fields have been mapped!</p>
+                                            </div>
+                                            <% } %>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="button" id="modalButton" class="btn btn-danger" data-toggle="modal" data-target=".bd-example-modal-sm" style="width: 75%; background-color:red  ;">Reset All Transformations</button>
+                        <button type="button" id="modalButton" class="btn btn-danger" data-toggle="modal"
+                            data-target=".bd-example-modal-sm" style="width: 75%; background-color:red  ;">Reset All
+                            Transformations</button>
 
-                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">Are You Sure ?</h5>
-                                  
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Are You Sure ?</h5>
+
+                                    </div>
+                                    <div class="modal-body">
+                                        Resetting will delete all the transformations.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="close" class="btn btn-secondary"
+                                            data-dismiss="modal">Cancel</button>
+                                        <form action="/deleteAll/<%= id %>" method="post">
+                                            <button type="submit" id="confirm" class="btn btn-primary">Confirm</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                 Resetting will delete all the transformations. 
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                  <form action="/deleteAll" method="post">
-                                    <button type="submit" id="confirm" class="btn btn-primary">Confirm</button>
-                                  </form>
-                                </div>
-                              </div>
                             </div>
                         </div>
-                        <form action="/menu/preview/">
+
+
+
+
+                        <button type="button" id="modalhome" class="btn btn-danger" style="width:75%;">Go Home</button>
+
+
+                        <form action="/menu/<%= id %>/preview/">
                             <button type="submit" id="generate" class="btn btn-success" style="width: 75%;">Generate
-                            Template</button>
+                                Template</button>
                         </form>
-                            
-                        
+
+
                     </div>
                 </div>
 
@@ -122,16 +140,62 @@
                 <div id="tree"></div>
             </div>
         </div>
-        
+
     </div>
-    
+
+    <div class="modal fade" id="myhome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Are You Sure ?</h5>
+
+                </div>
+                <div class="modal-body">
+                    Going Back Home will Delete all your data. Do you want to continue?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closehome" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="/goHome/<%= id %>" method="POST">
+                        <button type="submit" id="confirm" class="btn btn-primary">Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        $('#unmapped').on('click', function () {
+            $('#unmappedModal').modal('show');
+        });
+
+        $('#closeunmapped').on('click', function () {
+            $('#unmappedModal').modal('hide');
+        });
+
+        $('#modalButton').on('click', function () {
+            $('#myModal').modal('show');
+        });
+
+        $('#close').on('click', function () {
+            $('#myModal').modal('hide');
+        });
+
+        $('#modalhome').on('click', function () {
+            $('#myhome').modal('show');
+        });
+
+        $('#closehome').on('click', function () {
+            $('#myhome').modal('hide');
+        });
+
+
         var jsondata_source = JSON.parse('<%- arr_source %>');
         var jsondata_target = JSON.parse('<%- arr_target %>');
         // console.log(jsondata[0].text);
         $.jstree.defaults.core.themes.variant = "large";
 
-        
+
 
         $(function () {
 
@@ -143,42 +207,27 @@
 
         });
 
-        function createJSTree(jsondata, identifier) {            
+        function createJSTree(jsondata, identifier) {
             identifier
-            .jstree({
-                'core': {
-                    'data': jsondata
-                },
-                
-                
-            })
-            .bind("loaded.jstree", function (event, data) {
-                $(this).jstree("open_all");
-            });
-            
+                .jstree({
+                    'core': {
+                        'data': jsondata
+                    },
+
+
+                })
+                .bind("loaded.jstree", function (event, data) {
+                    $(this).jstree("open_all");
+                });
+
         }
-        $('#unmapped').on('click', function(){
-            $('#unmappedModal').modal('show');
-        });
-
-        $('#closeunmapped').on('click', function(){
-            $('#unmappedModal').modal('hide');
-        });
-
-        $('#modalButton').on('click', function(){
-            $('#myModal').modal('show');
-        });
-
-        $('#close').on('click', function(){
-            $('#myModal').modal('hide');
-        });
-
-
-
-
-
-
         
+
+
+
+
+
+
     </script>
 </body>
 

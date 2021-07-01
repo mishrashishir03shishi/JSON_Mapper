@@ -255,3 +255,67 @@ console.log(_.get(king, 'data[0].commodityList'));
 // 	hi
 // };
 
+
+
+
+
+    
+    // for(var i=0; i<mappings.length; i++){
+    //     var item = {
+    //         "session_id": sessionID,
+    //         "mapping_check_": false,
+    //         "custom_check_": false,
+    //         "wrapper_check_": false,
+    //         "foreach_check_": false,
+    //     };
+    //     if(mappings[i].mapping_check_){
+    //         item["mapping_check_"] = true;
+    //         item["target_mapping_select_"] = mappings[i].target_mapping_select_;
+    //         item["source_mapping_select_"] = mappings[i].source_mapping_select_;
+    //         if(mappings[i].if_mapping_isNull_){
+    //             item["if_mapping_isNull_"] = true;
+    //             item["if_mapping_isNull_else_"] = mappings[i].if_mapping_isNull_else_;
+
+    //         }
+    //         else{
+    //             item["if_mapping_isNull_"] = false;
+    //         }
+    //         if(mappings[i].if_mapping_other_){
+    //             item["if_mapping_other_"] = mappings[i].if_mapping_other_;
+    //             item["if_mapping_condition_"] = mappings[i].if_mapping_condition_;
+    //             item["else_mapping_text_"] = mappings[i].else_mapping_text_;
+    //         }
+    //         else{
+    //             item["if_mapping_other_"] = false;
+    //         }
+    //     }
+    //     else if(mappings[i].custom_check_){
+    //         item["custom_check_"] = true;
+    //         item["target_custom_select_"] = mappings[i].target_custom_select_;
+    //         item["custom_response_"] = mappings[i].custom_response_;
+    //         if(mappings[i].ifcheck_custom_other_){
+    //             item["ifcheck_custom_other_"] = mappings[i].ifcheck_custom_other_;
+    //             item["if_custom_condition_"] = mappings[i].if_custom_condition_;
+    //             item["else_custom_text_"] = mappings[i].else_custom_text_;
+    //         }
+    //         else{
+    //             item["ifcheck_custom_other_"] = false;
+    //         }
+    //     }
+    //     else if(mappings[i].foreach_check_){
+    //         map.set(mappings[i].source_for_each_select_, mappings[i].foreach_iterator_ )
+    //         item["foreach_check_"] = true;
+    //         item["target_for_each_select_"] = mappings[i].target_for_each_select_;
+    //         item["source_for_each_select_"] = mappings[i].source_for_each_select_;
+    //         item["foreach_iterator_"] = mappings[i].foreach_iterator_;
+    //     }
+    //     else if(mappings[i].wrapper_check_){
+    //         item["wrapper_check_"] = mappings[i].wrapper_check_;
+    //         item["wrapper_start_"] = mappings[i].wrapper_start_;
+    //         item["wrapper_end_"] = mappings[i].wrapper_end_;
+    //         item["wrapper_condition_"] = mappings[i].wrapper_condition_;
+    //     }
+
+    //     data.push(item);
+    //     console.log(item);
+    // }

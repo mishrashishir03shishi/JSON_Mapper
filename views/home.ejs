@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu</title>
+  <title>Home</title>
 
   <link rel="stylesheet" href="stylesheets/style.css" />
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -36,6 +36,26 @@
         color: white;
         
         }
+        label{
+          display: inline-block;
+          background-color: indigo;
+          color: white;
+          padding: 0.5rem;
+          font-family: sans-serif;
+          border-radius: 0.3rem;
+          cursor: pointer;
+          margin-top: 1rem;
+        }
+        #upload{
+          display: inline-block;
+          background-color: grey;
+          color: white;
+          padding: 0.5rem;
+          font-family: sans-serif;
+          border-radius: 0.3rem;
+          cursor: pointer;
+          margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -54,7 +74,7 @@
       <div class="container">
         <div class="row">
           <div class="d-flex justify-content-evenly">
-              <button type="button" class="btn btn-outline-secondary">Import File</button>
+              <button type="button" id="import" class="btn btn-outline-secondary">Import File</button>
               <form action="/input" method="post">
               <button type="submit" class="btn btn-outline-secondary">New Project</button>
             </form>
@@ -70,6 +90,35 @@
         </div>
       </div>
 
+      <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Upload Your File Here</h5>
+              
+            </div>
+            <div class="modal-body">
+              <form action="/" enctype="multipart/form-data" method="post">
+                
+                <input type="file" name="file-to-upload" id="actual-btn" >
+                <!-- <label for="actual-btn">Choose File</label> -->
+                
+                <input type="submit" value="Upload" >
+                
+                
+              </form> 
+            </div>            
+          </div>
+        </div>
+    </div>
+
     
 </body>
+
+<script>
+  $('#import').on('click', function(){
+    $('#importModal').modal('show');
+  });
+
+</script>
 </html>

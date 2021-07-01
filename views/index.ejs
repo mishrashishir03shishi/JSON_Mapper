@@ -70,6 +70,7 @@
   </div>
   <br>
   <hr>
+  <form method="post" name="formo" onsubmit="return check()" action="/loopselect">
   <div class="container">
     <div class="row">
       <div class="col-6">
@@ -77,14 +78,14 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroup-sizing-default">Project Title</span>
           </div>
-          <input type="text" required=true class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+          <input type="text" name="title"  class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
         </div>
       </div>
       
     </div>
   </div>
  
-    <form method="post" name="formo" onsubmit="return check()" action="/loopselect">
+    
       <div class="row" style="margin: 30px;">
     <div class="col-4">
       <h4 style="margin-bottom:20px">Source Data : </h4>

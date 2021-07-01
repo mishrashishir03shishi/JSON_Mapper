@@ -1,10 +1,13 @@
-const fileExporter = function generate_export(jsonfiles, mappings, session_id){
+const fileExporter = function generate_export(jsonfiles,  session_id, name_){
     // console.log(jsonfiles);
-    var source_body = jsonfiles[0].source_body;
-    var target_body = jsonfiles[0].target_body;
+    var source_body = jsonfiles.source_body;
+    var target_body = jsonfiles.target_body;
+    var title = jsonfiles.name;
+    var mappings = jsonfiles.mappings;
     
     
     var obj = {
+        title : title, 
         source : source_body,
         target : target_body,
         transformations : mappings,
@@ -13,9 +16,7 @@ const fileExporter = function generate_export(jsonfiles, mappings, session_id){
 
     var json = JSON.stringify(obj);
     var fs = require('fs');
-    fs.writeFile('./export_files/' + session_id + '.json', json, 'utf8', function (err) {
-        if (err) throw err;               console.log('Results Received');
-      }); 
+    fs.writeFileSync('./export_files/' + name_ + '_' + session_id + '.json', JSON.stringify(obj));
 }
 
 module.exports = fileExporter;

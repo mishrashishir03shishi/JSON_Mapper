@@ -2,11 +2,11 @@ const { json } = require('body-parser');
 const { isArray } = require('lodash');
 const _ = require('lodash'); 
 
-const process = function(jsonfile, mappings){
-    var json_string = jsonfile[0].target_body;
-    var json_ = JSON.parse(json_string);
-    var source_map = jsonfile[0].source_paths;
-    var target_map = jsonfile[0].target_paths;
+const process = function( target, src_map, tgt_map, mappings){
+    
+    var json_ = target;
+    var source_map = src_map;
+    var target_map = tgt_map;
     var mapping = [];
     var custom = [];
     var loop = [];

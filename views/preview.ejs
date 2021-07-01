@@ -57,14 +57,14 @@
         </div>
         <div class="row">
 
-          <form action="/menu">
+          <form action="/menu/<%= id %>">
             <button type="submit" class="btn btn-primary" style="width:80%;">Go Back</button>
           </form>
 
         </div>
         <div class="row">
 
-          <form action="/download">
+          <form action="/download/<%= id %>">
             <button type="submit" class="btn btn-primary" style="width:80%;">Export Data</button>
           </form>
 
@@ -91,7 +91,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <form action="/goHome" method="POST">
+          <form action="/goHome/<%= id %>" method="POST">
             <button type="submit" id="confirm" class="btn btn-primary">Confirm</button>
           </form>
         </div>

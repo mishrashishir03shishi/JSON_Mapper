@@ -1,22 +1,143 @@
 {
-    "authRequire": "Y",
-    "data": [ {
-            "poExternalNumber": "",
-            "buyerId": "",
-            "buyerName": "",
-            "supplierId": "",
-            "supplierName": "",
-            "paymentTerms": "",
-            "commodityList": [
-                {
-                    "commodityCode": "",
-                    "commodityName": "",
-                    "unitWeight": 0
-                }
-            ],
-            "programId": "",
-            "preAccepted": "",
-            "basePoAmount": 0
+    "source": "{\r\n    \"dictionaryArray\": null,\r\n    \"referenceNo\": \"LC4604356268337699\",\r\n    \"interfaceId\": \"TRADE_UPDATE_REMARK\",\r\n    \"entity\": \"OBDXBU4\",\r\n    \"headersMap\": {\r\n        \"HOME_BRANCH\": \"000\"\r\n    },\r\n    \"queryMap\": null,\r\n    \"commentList\": [\r\n        {\r\n            \"dictionaryArray\": null,\r\n            \"textObject\": \"Charges Account: PK2@~PK20010440017\",\r\n            \"subject\": \"PK2ILCI000057829\",\r\n            \"stage\": \"Scrutiny\",\r\n            \"sourceType\": \"html\",\r\n            \"internalToBank\": true,\r\n            \"initiatorName\": \"\",\r\n            \"initiatorEmail\": null,\r\n            \"email\": null,\r\n            \"entityRefNo\": \"PK2ILCI000057829\",\r\n            \"applicationNumber\": \"PK2ILCI000057829\"\r\n        }\r\n    ]\r\n}\r\n                  ",
+    "target": "{\r\n    \"commentList\": [\r\n        {\r\n            \"applicationNO\": \"PK2ILCI000057829\",\r\n            \"entityRefNo\": \"PK2ILCI000057829\",\r\n\t\t\t\r\n            \"email\": \"test@mail.com\",\r\n\t\t\t\r\n            \"initiatorEmail\": \"test@mail.com\",\r\n\t\t\t\r\n            \"initiatorName\": \"OBTFPM02\",\r\n            \"isInternalToBank\": true,\r\n            \"sourceType\": \"html\",\r\n            \"stage\": \"Scrutiny\",\r\n\t\t\t\r\n            \"subject\": \"PK2ILCI000057829\",\r\n            \"textObject\": \"Charges Account: PK2@~PK20010440017\"\r\n        }\r\n    ]\r\n}\r\n                  ",
+    "transformations": [
+        {
+            "_id": "60daeb029040043c4482443e",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": false,
+            "custom_check_": false,
+            "wrapper_check_": false,
+            "foreach_check_": true,
+            "target_for_each_select_": "root<>/commentList/",
+            "source_for_each_select_": "root<>/commentList/",
+            "foreach_iterator_": "item",
+            "__v": 0
+        },
+        {
+            "_id": "60daeb159040043c4482443f",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": true,
+            "target_mapping_select_": "root<>/commentList/0/applicationNO/",
+            "source_mapping_select_": "root<>/commentList/0/applicationNumber/",
+            "if_mapping_isNull_": false,
+            "if_mapping_other_": false,
+            "custom_check_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daeb239040043c44824440",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": true,
+            "target_mapping_select_": "root<>/commentList/0/entityRefNo/",
+            "source_mapping_select_": "root<>/commentList/0/applicationNumber/",
+            "if_mapping_isNull_": false,
+            "if_mapping_other_": false,
+            "custom_check_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daeb379040043c44824441",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": false,
+            "custom_check_": true,
+            "target_custom_select_": "root<>/commentList/0/email/",
+            "custom_response_": "test@mail.com",
+            "ifcheck_custom_other_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daeb6b9040043c44824442",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": false,
+            "custom_check_": true,
+            "target_custom_select_": "root<>/commentList/0/initiatorEmail/",
+            "custom_response_": "test@mail.com",
+            "ifcheck_custom_other_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daeb759040043c44824443",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": false,
+            "custom_check_": true,
+            "target_custom_select_": "root<>/commentList/0/isInternalToBank/",
+            "custom_response_": "true",
+            "ifcheck_custom_other_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daeb819040043c44824444",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": false,
+            "custom_check_": true,
+            "target_custom_select_": "root<>/commentList/0/sourceType/",
+            "custom_response_": "html",
+            "ifcheck_custom_other_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daeb969040043c44824445",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": false,
+            "custom_check_": true,
+            "target_custom_select_": "root<>/commentList/0/initiatorName/",
+            "custom_response_": "$env.OBTFPM_ENV_CONSTANT.OBTFPM_UserId",
+            "ifcheck_custom_other_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daeba59040043c44824446",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": false,
+            "custom_check_": true,
+            "target_custom_select_": "root<>/commentList/0/stage/",
+            "custom_response_": "Scrutiny",
+            "ifcheck_custom_other_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daebd89040043c44824447",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": true,
+            "target_mapping_select_": "root<>/commentList/0/subject/",
+            "source_mapping_select_": "root<>/commentList/0/applicationNumber/",
+            "if_mapping_isNull_": false,
+            "if_mapping_other_": false,
+            "custom_check_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
+        },
+        {
+            "_id": "60daec069040043c44824448",
+            "session_id": "5gn0RS9eByFEVzKM5v5WPTwnQpHeWxPr",
+            "mapping_check_": true,
+            "target_mapping_select_": "root<>/commentList/0/textObject/",
+            "source_mapping_select_": "root<>/commentList/0/applicationNumber/",
+            "if_mapping_isNull_": true,
+            "if_mapping_isNull_else_": "",
+            "if_mapping_other_": false,
+            "custom_check_": false,
+            "foreach_check_": false,
+            "wrapper_check_": false,
+            "__v": 0
         }
     ]
 }
