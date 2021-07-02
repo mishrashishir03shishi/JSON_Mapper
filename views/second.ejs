@@ -683,6 +683,12 @@
                     return false;
                 }
                 else {
+                    var txt = $('#targetMapping').text();
+                    console.log(txt);
+                    if(txt!=""){
+                        alert('This field has been mapped. Choose another field.');
+                        return false;
+                    }
                     return true;
                 }
 
@@ -693,6 +699,12 @@
                     return false;
                 }
                 else {
+                    var txt = $('#targetCustom').text();
+                    console.log(txt);
+                    if(txt!=""){
+                        alert('This field has been mapped. Choose another field.');
+                        return false;
+                    }
                     return true;
                 }
 

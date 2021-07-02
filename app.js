@@ -456,7 +456,7 @@ app.post('/targetsearch/:id', (req, res) => {
     .then((result)=>{
         var mappings = result.mappings;
         var count=0;
-        console.log(mappings);
+        // console.log(mappings);
         for(var i=0; i<mappings.length; i++){
             if((mappings[i].mapping_check_ && target==mappings[i].target_mapping_select_) || (mappings[i].custom_check_ && target==mappings[i].target_custom_select_)){
                 count++;
