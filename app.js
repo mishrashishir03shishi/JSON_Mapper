@@ -3,14 +3,14 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const crypto = require("crypto");
 const multer = require('multer');
-const fileRead = require('./fileRead');
-const builder = require('./builder');
-const processor = require('./processor');
-const pluralize = require('pluralize')
+const fileRead = require('./helpers/fileRead');
+const builder = require('./helpers/builder');
+const processor = require('./helpers/processor');
+
 const mongoose = require('mongoose');
 const Jsonfile = require('./models/mapping');
-const prettyPrint = require('./prettyPrint');
-const fileExporter = require('./fileExporter');
+const prettyPrint = require('./helpers/prettyPrint');
+const fileExporter = require('./helpers/fileExporter');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
 
@@ -67,7 +67,7 @@ app.post('/', upload.single('file-to-upload'), (req, res) => {
     fs.unlinkSync(file);
     
     var items = builder(info.source, info.target, info.map);
-    console.log(info.name)
+    // console.log(info.name)
     const jsonfile = new Jsonfile({
         name : info.name,
         session_id: req.sessionID,
@@ -115,20 +115,20 @@ app.post('/', upload.single('file-to-upload'), (req, res) => {
 
 
 app.post('/input', (req, res) => {
-    // console.log(req.sessionID);
+    
     res.render('index');
 });
 
 
 app.post('/loopselect', (req, res) => {
-    // console.log(req.sessionID);
+    
     const jsonfile = new Jsonfile({
         name : req.body.title,
         session_id: req.sessionID,
         source_body: req.body.source_file,
         target_body: req.body.target_file,
     });
-    // jsonfile.testFunc(); 
+    
 
 
     jsonfile.save()
@@ -150,14 +150,13 @@ app.post('/loopselect', (req, res) => {
 
 
 app.post('/menu/:id', (req, res) => {
-    // console.log(req.sessionID);
-    // console.log(req);
-    console.log(req.params.id);
     var src = [];
     var trgt = [];
     var iter = [];
     var src_map = new Map();
     for (const [key, value] of Object.entries(req.body)) {
+        if(value=="Select")
+            continue;
         if (key != "iterator") {
             trgt.push(key);
             src.push(value);
@@ -195,9 +194,8 @@ app.post('/menu/:id', (req, res) => {
         };
         data.push(obj);
 
-
     });
-    console.log(data);
+
 
     Jsonfile.findOne({ _id: req.params.id })
         .then((result) => {
@@ -391,7 +389,7 @@ app.get('/menu/:id/mappings/', (req, res) => {
         .then((item) => {
             //console.log(result);
             var result = item.mappings;
-            var mappings = []; var customs = []; var foreachs = []; var wrappers = [];
+            var mappings = []; var customs = []; var foreachs = []; var wrappers = []; 
             result.forEach((record) => {
                 if (record.mapping_check_ === true) {
                     mappings.push(record);
@@ -401,16 +399,120 @@ app.get('/menu/:id/mappings/', (req, res) => {
                 }
                 else if (record.foreach_check_ === true) {
                     foreachs.push(record);
+                   
                 }
                 else {
                     wrappers.push(record);
                 }
-            })
-            res.render('view_mappings', { mappings, customs, foreachs, wrappers, id: req.params.id })
+            });
+            var s_array = [];
+            var t_array = [];
+            var root = "root<>/"
+            walk(JSON.parse(item.source_body), root, s_array);
+            walk(JSON.parse(item.target_body), root, t_array);
+            res.render('view_mappings', { mappings, customs, foreachs, wrappers, s_array, t_array, id: req.params.id })
         })
         .catch((err) => {
             console.log(err);
         });
+});
+
+app.post('/menu/:id/mappings', (req, res) => {
+ 
+    var src = [];
+    var trgt = [];
+    var iter = [];
+    
+    var src_map = new Map();
+    for (const [key, value] of Object.entries(req.body)) {                
+        if (value[0] != "Select") {
+            trgt.push(key);
+            src.push(value[0]);
+            iter.push(value[1]);
+            src_map.set(value[0], value[1]);
+        }       
+    }
+    
+    var data = [];
+    trgt.forEach(function (item, i) {        
+        var obj = {            
+            mapping_check_: false,
+            custom_check_: false,
+            wrapper_check_: false,
+            foreach_check_: true,
+            target_for_each_select_: item,
+            source_for_each_select_: src[i],
+            foreach_iterator_: iter[i]
+        };
+        data.push(obj);
+
+    });
+
+
+    Jsonfile.findOne({ _id: req.params.id })
+        .then((result) => {
+            // var data = result;
+            var items = builder(result.source_body, result.target_body, src_map);
+            
+            var array = [];
+            // console.log(result.mappings);
+            for(var i=0; i<result.mappings.length; i++){
+                if(result.mappings[i].foreach_check_==false){
+                    array.push(result.mappings[i]);                    
+                }
+            }
+            // console.log(array);
+            for(var i=0; i<data.length; i++){
+                array.push(data[i]);
+            }
+            // console.log(array);
+            var mappings = []; var customs = []; var foreachs = []; var wrappers = []; 
+            for(var i=0; i<array.length; i++){
+                const id_ =  crypto.randomBytes(16).toString("hex");
+                array[i]["id"] = id_;
+                if (array[i].mapping_check_ === true) {
+                    mappings.push(array[i]);
+                }
+                else if (array[i].custom_check_ === true) {
+                    customs.push(array[i]);
+                }
+                else if (array[i].foreach_check_ === true) {
+                    foreachs.push(array[i]);
+                    
+                }
+                else {
+                    wrappers.push(array[i]);
+                }
+            }
+
+            var s_array = [];
+            var t_array = [];
+            var root = "root<>/"
+            walk(JSON.parse(result.source_body), root, s_array);
+            walk(JSON.parse(result.target_body), root, t_array);
+           
+
+            Jsonfile.findOneAndUpdate({ _id: req.params.id},
+                {
+                    source_paths: items.source_paths, target_paths: items.target_paths, source_result: items.source_result,
+                    target_result: items.target_result, $set : {mappings : array},
+                },
+                
+                function (err, doc) {
+                    if (err) {
+                        console.log("err");
+                    }
+                    else {
+
+                        
+                        res.render('view_mappings', { mappings, customs, foreachs, wrappers, s_array,t_array,  id: req.params.id })
+                    }
+                });
+
+        })
+        .catch((err) => {
+            console.log(err);
+        })
 });
 
 app.post('/typeDisplay/:id', (req, res) => {
@@ -493,16 +595,16 @@ app.post('/deleteAll/:id', (req, res) => {
             var mappings = result.mappings;
             var new_array = [];
             for(var i=0; i<mappings.length; i++){
-                if(mappings[i].foreach_check_){
+                if(mappings[i].foreach_check_ == true){
                     new_array.push(mappings[i]);
                 }
             }
-            Jsonfile.findOneAndUpdate({session_id : req.session_id}, {$set : {mappings : new_array}}, function(err, doc){
+            Jsonfile.findOneAndUpdate({_id : req.params.id}, {$set : {mappings : new_array}}, function(err, doc){
                 if(err){
                     console.log(err);
                 }
                 else{
-                    console.log("Successfully deleted everything");
+                    
                     res.redirect(`/menu/${req.params.id}`);
                 }
             });
@@ -514,9 +616,6 @@ app.post('/deleteAll/:id', (req, res) => {
 });
 
 
-
-
-//To be edited
 app.get('/menu/:id/preview', (req, res) => {
     // console.log(req.sessionID);
 
@@ -568,8 +667,6 @@ app.get('/download/:id', (req, res) => {
 });
 
 app.post('/goHome/:id', (req, res) => {
-
-
     Jsonfile.deleteOne({ _id: req.params.id })
         .then((result) => {
             console.log("Deleted jsonfiles");      
@@ -578,9 +675,6 @@ app.post('/goHome/:id', (req, res) => {
         .catch((err) => {
             console.log(err);
         });
-
-
-
 });
 
 app.use((req, res) => {

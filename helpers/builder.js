@@ -2,7 +2,7 @@ const builder = function(source_body, target_body, src_map){
     source_paths = new Map();
     target_paths = new Map();
 
-    source_result = source_walk(JSON.parse(source_body),"root<>/", source_paths, "", 0, "$body.", 0, src_map);
+    source_result = source_walk(JSON.parse(source_body),"root<>/", source_paths, "", 0, "$body.", 0, src_map, 0);
     target_result = target_walk(JSON.parse(target_body),"root<>/", target_paths, "", 0, 0);
     
     for (let [key, value] of  source_paths.entries()) {
@@ -26,7 +26,7 @@ const builder = function(source_body, target_body, src_map){
 }
 
 
-function source_walk(obj, root,  get, root2, array_counter, iter, distance, src_map) {   
+function source_walk(obj, root,  get, root2, array_counter, iter, distance, src_map, array_flag) {   
     var data = [];       
 	
     for (var key in obj) {         
@@ -34,41 +34,67 @@ function source_walk(obj, root,  get, root2, array_counter, iter, distance, src_
 		var contents = {};  
         var path = root + key + '/';  
 		item["text"] = key;
+		var identity = 1;
+		var iter_id;
+		contents["text"] = key;
+		var subs = iter;
+		// console.log(key + " -> " + array_flag);
+		var lush = 0;
         if(Array.isArray(obj[key])){    			
 			array_counter++;
-			contents["isArray"] = true;
-            // contents["text"] = pluralize.singular(key);
-            if(src_map.has(path)){
-                
+			contents["isArray"] = true;            
+            if(src_map.has(path)){                
                 var josh = src_map.get(path);
-                contents["text"] = josh;
-                
+                iter_id = key;
+                identity = 0;
+				contents["text"] = josh;
+				
             }
+			else{
+				if(Number.isInteger(parseInt(key)) && array_flag!=1){
+					iter_id = '[' + key + ']';
+					lush = 1;
+				}
+				else{
+					iter_id = key;
+				}	
+					
+			}
         }     
         else{
+			if(Number.isInteger(parseInt(key)) && array_flag!=1){
+				iter_id = '[' + key + ']';
+				lush = 1;
+			}
+			else{
+				iter_id = key;
+			}
+			
             contents["isArray"] = false;
-            contents["text"] = key;
+            
         }
         
         contents["distance"] = distance;
 		
 		contents["type"] = typeof obj[key];
 		contents["array_no"] = array_counter;
-		
-		contents["iterator"] = iter + item.text + "." ;
+		if(lush==1){
+			subs = subs.substring(0, iter.length-1);			
+		}
+		contents["iterator"] = subs + iter_id + "." ;
 		contents["path"] = root2 + item.text + '.';
-		if(obj[key]==null){
+		if(obj[key]==null){	
             contents["type"] = 'null';
         }
 				
 				
 		get.set(path, contents);
                 
-        if ((obj[key] instanceof Object ) && !Array.isArray(obj[key])) {                
-            item["children"] = source_walk(obj[key], root + item.text + '/', get, root2 + item.text + '.',  array_counter, iter + item.text +'.', ++distance, src_map);                 
+        if ((obj[key] instanceof Object ) && identity) {                
+            item["children"] = source_walk(obj[key], root + item.text + '/', get, root2 + item.text + '.',  array_counter, subs + iter_id +'.', ++distance, src_map,0);                 
         }
-		else if(Array.isArray(obj[key])){
-			item["children"] = source_walk(obj[key], root + item.text + '/', get, root2 + item.text + '.',  array_counter, "$" + josh + ".",  ++distance, src_map);
+		else if(identity == 0){
+			item["children"] = source_walk(obj[key], root + item.text + '/', get, root2 + item.text + '.',  array_counter, "$" + josh + ".", ++distance, src_map,1);
 		}
            
         data.push(item);  	
@@ -161,71 +187,5 @@ function remove_num(iter){
 	return iter
 }
 
-var source_body = {
-	"orders": [
-		{
-			"referenceNo": "",
-			"externalReferenceId": null,
-			"partyId": "",
-			"partyName": "",
-			"associatedParty": {
-				"id": "",
-				"name": "",
-				"address": null
-			},
-			"programCode": "",
-			"programName": "",
-			"grossAmount": 0,
-			"preAccepted": false,
-			"paymentTerms": "cash",
-			"commodities": [
-				{
-					"code": "",
-					"name": "",
-					"weight": 0,
-					"type":"A"					
-				},
-				{
-					"code": "",
-					"name": "",
-					"weight": 0,
-					"type":"B"	
-				}
-			]
-		}
-	]
-};
-
-var target_body = {
-	"authRequire": "Y",
-	"data": [
-		{
-			"poExternalNumber": "",
-			"buyerId": "",
-			"buyerName": "",
-			"supplierId": "",
-			"supplierName": "",
-			"paymentTerms": "",
-			"commodityList": [
-				{
-					"commodityCode": "",
-					"commodityName": "",
-					"unitWeight": 0
-				}
-			],
-			"programId": "",
-			"preAccepted": "",
-			"basePoAmount": 0
-		}
-	]
-};
-
-// var map = new Map();
-// map.set('root<>/orders/', 'order');
-// map.set('root<>/orders/0/commodities/', 'commodity');
-// source_body = JSON.stringify(source_body);
-// target_body = JSON.stringify(target_body);
-// console.log(map);
-// builder(source_body, target_body, map);
 
 module.exports = builder;

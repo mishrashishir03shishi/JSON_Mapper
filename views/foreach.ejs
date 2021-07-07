@@ -48,7 +48,7 @@
             </ul>
     
         </div>
-        <form action="/menu/<%= id %>" method="post"name="form1" onsubmit="return required()">
+        <form action="/menu/<%= id %>" method="post" name="form1" >
         <div class="row">
             <% if(t_array.length>0){ %>
                 <table class="table">
@@ -69,15 +69,15 @@
                                 <td>
                                     <%= t_array[i] %>
                                 </td>
-                                <td><select class="form-select form-select-sm" aria-label=".form-select-sm example" name="<%= t_array[i] %>" required>
-                                        <option selected value="">Select</option>
+                                <td><select class="form-select form-select-sm" aria-label=".form-select-sm example" name="<%= t_array[i] %>" >
+                                        <option selected >Select</option>
                                         <% for(var j=0; j<s_array.length; j++) { %>
                                             <option value="<%= s_array[j] %>">
                                                 <%= s_array[j] %>
                                             </option>
                                         <% } %>
                                     </select></td>
-                                <td><input class="form-control form-control-sm" type="text" placeholder="iterator" name="iterator" required=true></td>
+                                <td><input class="form-control form-control-sm" type="text" placeholder="iterator" name="iterator" ></td>
                             </tr>
                         <% } %>
                     </tbody>
@@ -87,12 +87,17 @@
                 <% } %>
         </div>
         <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4"><button type="submit" class="btn btn-outline-success">Next</button></div>
-            <div class="col-4"></div>
-            
+            <div class="d-flex justify-content-evenly">
+                <div class="col-4"></div>
+                <div class="col"><button type="submit" class="btn btn-outline-success">Next</button></div></form>
+                <div class="col">
+                    <form action="/goHome/<%= id %>" method="POST">
+                        <button type="submit" id="confirm" class="btn btn-danger">Go Home</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        </form>
+        
         
 
     </div>

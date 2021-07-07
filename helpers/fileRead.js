@@ -96,11 +96,6 @@ function createData(obj, sessionID) {
         }      
         
         data.push(content);
-        // console.log("--------------");
-        // console.log(item);
-        // console.log(content);
-        // console.log("--------------");
-
 
     }
     
