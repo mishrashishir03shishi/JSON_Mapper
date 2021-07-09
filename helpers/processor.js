@@ -1,5 +1,5 @@
 const { json } = require('body-parser');
-const { isArray } = require('lodash');
+const { isArray, isNull } = require('lodash');
 const _ = require('lodash'); 
 
 const process = function( target, src_map, tgt_map, mappings){
@@ -196,7 +196,7 @@ function mapping_handler(obj, json_, s_map, t_map){
 
 function mapping_isNull_handler(iter, type, null_text){
     var output;
-    if(type=="string"){
+    if(type=="string" && null_text!="null"){
         output = `@ #if(!$custom.isNull(${iter})) "${iter}" #{else} "${null_text}" #end, @`;
     }
     else{
@@ -220,7 +220,7 @@ function mapping_if_handler(obj, iter, type){
 
 function mapping_wrap(iter, iter_buffer, type, null_text){
     var output;
-    if(type=="string"){
+    if(type=="string" && null_text != "null"){
         output = `@ #if(!$custom.isNull(${iter}))  ${iter_buffer}  #{else} "${null_text}" #end, @`;
     }
     else{
