@@ -1,105 +1,3 @@
-// var mongoose = require('mongoose');
-// var Schema = mongoose.Schema;
-
-// var mappingSchema = new Schema({
-        
-//     mapping_check_ : {
-//         type : Boolean,
-//         required : true
-//     },    
-//     target_mapping_select_ : {
-//         type : String,  
-//         required : mappingCheckHandler    
-//     },
-//     source_mapping_select_ : {
-//         type : String,
-//         required : mappingCheckHandler
-//     },
-//     if_mapping_isNull_ : {
-//         type : Boolean,     
-//         required : mappingCheckHandler 
-//     },
-//     if_mapping_isNull_else_ : {
-//         type : String,            
-//     },
-//     if_mapping_other_ : {
-//         type: Boolean,
-//         required : mappingCheckHandler
-//     },
-//     if_mapping_condition_ : {
-//         type : String,
-//         required : ifMappingCheckHandler
-//     },
-//     else_mapping_text_ : {
-//         type : String,
-//         required : ifMappingCheckHandler
-//     },
-   
-    
-
-//     custom_check_ : {
-//         type : Boolean,
-//         required : true
-//     },    
-//     target_custom_select_ : {
-//         type : String,
-//         required : customCheckHandler       
-//     },
-//     custom_response_ : {
-//         type : String,  
-//         required : customCheckHandler      
-//     },    
-//     ifcheck_custom_other_ : {
-//         type : Boolean,
-//         required : customCheckHandler
-//     },
-//     if_custom_condition_ : {
-//         type : String,
-//         required : ifCustomCheckHandler
-//     },
-//     else_custom_text_ : {
-//         type : String,
-//         required : ifCustomCheckHandler
-//     },
-  
-
-//     foreach_check_ : { 
-//         type : Boolean,
-//         required : true
-//     },
-//     target_for_each_select_ : {
-//         type:String,
-//         required : forEachCheckHandler
-//     },
-//     source_for_each_select_ : {
-//         type:String,
-//         required : forEachCheckHandler
-//     },
-//     foreach_iterator_ : {
-//         type :String,
-//         required : forEachCheckHandler
-//     },
-    
-
-//     wrapper_check_ : {
-//         type : Boolean,
-//         required : true
-//     },
-//     wrapper_start_ : {
-//         type:String,
-//         required : wrapperCheckHandler
-//     },
-//     wrapper_end_ : {
-//         type:String,
-//         required : wrapperCheckHandler
-//     },
-//     wrapper_condition_ : {
-//         type:String,
-//         required : wrapperCheckHandler
-//     }
-
-// });
-
 function isNullmappingCheckHandler(){
     if(this.mapping_check_ === true && this.if_mapping_isNull_ === true)  
         return true;
@@ -151,22 +49,22 @@ function wrapperCheckHandler(){
         return false;
 }
 
-// var Mapping = mongoose.model('Mapping', mappingSchema);
-
-// module.exports = Mapping;
-
-
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
 var jsoninput = new Schema({
+
     session_id : {
-        type : String,
-        
+        type : String,        
     },
     name : {
         type : String,
+    },
+    createdAt : {
+        type : Date,
+        default : Date.now,
+        expireAfterSeconds : 3600*6,
     },
     source_body : {
         type: String,
@@ -289,8 +187,7 @@ var jsoninput = new Schema({
             type:String,
             required : wrapperCheckHandler
         }
-    }]
-    
+    }]   
     
 });
 

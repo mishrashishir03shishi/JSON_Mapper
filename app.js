@@ -36,12 +36,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useFi
 
 app.set('view engine', 'ejs');
 
-
-
-
 app.use(bodyParser.urlencoded({ extended: true }));
-
-
 
 var storage = multer.diskStorage(
     {
@@ -55,19 +50,18 @@ var storage = multer.diskStorage(
 
 var upload = multer({ storage: storage });
 
-app.get('/', (req, res) => {
-    // console.log(req.sessionID);
+app.get('/', (req, res) => {    
     res.render('home');
 });
 
-app.post('/', upload.single('file-to-upload'), (req, res) => {
+app.post('/menu', upload.single('file-to-upload'), (req, res) => {
     var info = fileRead(req.sessionID);
     const file = `${__dirname}/uploads/${req.sessionID}.json`;
     var fs = require('fs');
     fs.unlinkSync(file);
 
     var items = builder(info.source, info.target, info.map);
-    // console.log(info.name)
+    console.log(info.name)
     const jsonfile = new Jsonfile({
         name: info.name,
         session_id: req.sessionID,
@@ -82,6 +76,7 @@ app.post('/', upload.single('file-to-upload'), (req, res) => {
     var id;
     jsonfile.save()
         .then((result) => {
+            console.log("Uploaded file saved successfully");
             id = result._id;
             var map = result.target_paths;
             var mapped_targets = new Set();
@@ -115,26 +110,20 @@ app.post('/', upload.single('file-to-upload'), (req, res) => {
 
 
 app.post('/input', (req, res) => {
-
     res.render('index');
 });
 
 
 app.post('/loopselect', (req, res) => {
-
     const jsonfile = new Jsonfile({
         name: req.body.title,
         session_id: req.sessionID,
         source_body: req.body.source_file,
         target_body: req.body.target_file,
     });
-
-
-
     jsonfile.save()
         .then((result) => {
             console.log("Files Saved Successfully");
-
             var s_array = [];
             var t_array = [];
             var root = "root<>/"
@@ -183,8 +172,7 @@ app.post('/menu/:id', (req, res) => {
 
 
     Jsonfile.findOne({ _id: req.params.id })
-        .then((result) => {
-            // var data = result;
+        .then((result) => {            
             var items = builder(result.source_body, result.target_body, src_map);
             Jsonfile.findOneAndUpdate({ _id: req.params.id, source_body: result.source_body, target_body: result.target_body },
                 {
@@ -197,7 +185,6 @@ app.post('/menu/:id', (req, res) => {
                         console.log("Something wrong when updating data!");
                     }
                     else {
-
                         var map = items.target_paths;
                         var unmapped_targets = [];
                         for (let [key, value] of map.entries()) {
@@ -212,14 +199,11 @@ app.post('/menu/:id', (req, res) => {
         })
         .catch((err) => {
             console.log(err);
-        })
-
-
+        });
 });
 
 
-app.get('/menu/:id', (req, res) => {
-    // console.log(req.sessionID);
+app.get('/menu/:id', (req, res) => {  
 
     Jsonfile.findOne({ _id: req.params.id })
         .then((data) => {
@@ -242,19 +226,15 @@ app.get('/menu/:id', (req, res) => {
                 if (!(mapped_targets.has(key)) && value.type != "object") {
                     unmapped_targets.push(key);
                 }
-            }
-            // console.log(unmapped_targets);
+            }            
             res.render('first', { arr_source: JSON.stringify(data.source_result), arr_target: JSON.stringify(data.target_result), unmapped_targets, id: req.params.id });
-
-
         })
         .catch((err) => {
             console.log(err);
         });
 });
 
-app.get('/menu/:id/new/', (req, res) => {
-    // console.log(req.sessionID);
+app.get('/menu/:id/new/', (req, res) => {    
     Jsonfile.findOne({ _id: req.params.id })
         .then((result) => {
             res.render('second', { source: result.source_paths, target: result.target_paths, arr_target: JSON.stringify(result.target_result), id: req.params.id });
@@ -264,12 +244,8 @@ app.get('/menu/:id/new/', (req, res) => {
         });
 });
 
-app.post('/menu/:id/new/', (req, res) => {
-    // console.log(req.sessionID);
-    // console.log(req.body);
+app.post('/menu/:id/new/', (req, res) => {   
     var mapping_check = false; var custom_check = false; var wrapper_check = false;
-
-
     if (req.body.hasOwnProperty('map_check')) {
         mapping_check = true;
         var if_mapping_isNull; var source_mapping_select; var target_mapping_select; var if_mapping_other;
@@ -298,7 +274,6 @@ app.post('/menu/:id/new/', (req, res) => {
         }
         else {
             if_mapping_other = false;
-
         }
     }
     else if (req.body.hasOwnProperty('cust_check')) {
@@ -314,7 +289,6 @@ app.post('/menu/:id/new/', (req, res) => {
             var else_custom_text = req.body.else_custom_text;
 
         }
-
     }
     else if (req.body.hasOwnProperty('wrapper_check')) {
         wrapper_check = true;
@@ -322,7 +296,6 @@ app.post('/menu/:id/new/', (req, res) => {
         wrapper_start = req.body.wrapper_start;
         wrapper_end = req.body.wrapper_end;
         wrapper_condition = req.body.wrapper_condition;
-
     }
 
     const id_ = crypto.randomBytes(16).toString("hex");
@@ -360,16 +333,14 @@ app.post('/menu/:id/new/', (req, res) => {
         if (err) {
             console.log(err);
         }
-        else {
-            // console.log(doc);
+        else {            
             console.log("Mapping saved successfully");
             res.redirect(`/menu/${req.params.id}`);
         }
     });
 });
 
-app.get('/menu/:id/mappings/', (req, res) => {
-    // console.log(req.sessionID);
+app.get('/menu/:id/mappings/', (req, res) => {    
     Jsonfile.findOne({ _id: req.params.id })
         .then((item) => {
             //console.log(result);
@@ -435,22 +406,17 @@ app.post('/menu/:id/mappings', (req, res) => {
 
 
     Jsonfile.findOne({ _id: req.params.id })
-        .then((result) => {
-            // var data = result;
+        .then((result) => {            
             var items = builder(result.source_body, result.target_body, src_map);
-
-            var array = [];
-            // console.log(result.mappings);
+            var array = [];            
             for (var i = 0; i < result.mappings.length; i++) {
                 if (result.mappings[i].foreach_check_ == false) {
                     array.push(result.mappings[i]);
                 }
-            }
-            // console.log(array);
+            }           
             for (var i = 0; i < data.length; i++) {
                 array.push(data[i]);
-            }
-            // console.log(array);
+            }            
             var mappings = []; var customs = []; var foreachs = []; var wrappers = [];
             for (var i = 0; i < array.length; i++) {
                 const id_ = crypto.randomBytes(16).toString("hex");
@@ -476,32 +442,26 @@ app.post('/menu/:id/mappings', (req, res) => {
             walk(JSON.parse(result.source_body), root, s_array);
             walk(JSON.parse(result.target_body), root, t_array);
 
-
             Jsonfile.findOneAndUpdate({ _id: req.params.id },
                 {
                     source_paths: items.source_paths, target_paths: items.target_paths, source_result: items.source_result,
                     target_result: items.target_result, $set: { mappings: array },
                 },
-
                 function (err, doc) {
                     if (err) {
                         console.log("err");
                     }
                     else {
-
-
                         res.render('view_mappings', { mappings, customs, foreachs, wrappers, s_array, t_array, id: req.params.id })
                     }
                 });
-
         })
         .catch((err) => {
             console.log(err);
         })
 });
 
-app.post('/typeDisplay/:id', (req, res) => {
-    // console.log(Object.keys(req.body)[0]);   
+app.post('/typeDisplay/:id', (req, res) => {      
     Jsonfile.findOne({ _id: req.params.id })
         .then((result) => {
             var value;
@@ -513,9 +473,7 @@ app.post('/typeDisplay/:id', (req, res) => {
                 var pass = result.target_paths.get((req.body.datum)).type;
                 value = result.target_paths.get((req.body.datum)).value;
                 var iter = null;
-            }
-
-            // console.log(pass);
+            }            
             res.send({ type: pass, iterator: iter, value });
         })
         .catch((err) => {
@@ -524,8 +482,7 @@ app.post('/typeDisplay/:id', (req, res) => {
 });
 
 
-app.post('/foreach/:id', (req, res) => {
-    console.log(req.body);
+app.post('/foreach/:id', (req, res) => {    
     Jsonfile.findOne({ _id: req.params.id })
         .then((result) => {
             var text = result.source_paths.get(req.body.foreach_source).text;
@@ -542,8 +499,7 @@ app.post('/targetsearch/:id', (req, res) => {
     Jsonfile.findOne({ _id: req.params.id })
         .then((result) => {
             var mappings = result.mappings;
-            var count = 0;
-            // console.log(mappings);
+            var count = 0;            
             for (var i = 0; i < mappings.length; i++) {
                 if ((mappings[i].mapping_check_ && target == mappings[i].target_mapping_select_) || (mappings[i].custom_check_ && target == mappings[i].target_custom_select_)) {
                     count++;
@@ -556,6 +512,9 @@ app.post('/targetsearch/:id', (req, res) => {
                 res.send({ msg: false });
             }
         })
+        .catch((err)=>{
+            console.log(err);
+        });
 
 });
 
@@ -602,8 +561,6 @@ app.post('/deleteAll/:id', (req, res) => {
 
 
 app.get('/menu/:id/preview', (req, res) => {
-    // console.log(req.sessionID);
-
     Jsonfile.findOne({ _id: req.params.id })
         .then((result) => {
 
